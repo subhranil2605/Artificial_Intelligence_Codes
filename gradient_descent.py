@@ -38,21 +38,22 @@ def gradient_descent(start: float,
 
 # function
 def func(x):
-    return np.power(x, 2) - 4*x + 1
+    #return np.power(x, 2) - 4*x + 1
+    return np.sin(x) / x
 
 
-lower_bound = -10
-upper_bound = 10
+lower_bound = 2.0
+upper_bound = 15.0
 
 # random starting point
 starting_point = np.random.randint(lower_bound, upper_bound)
 
 
 # result
-lr=0.8
-history, result = gradient_descent(9, func, lr, 100)
+lr = 0.8
+history, result = gradient_descent(starting_point, func, lr, 100)
 
-print(f"The lo")
+print(f"The result is {result}")
 
 # convering list into array
 h = np.array(history)
@@ -75,16 +76,14 @@ x_data, y_data = [], []
 line, = ax.plot([], [], lw=3, c="red")
 point, = ax.plot([], [], 'k.')
 
-ax.set_xlabel("$x$")
-ax.set_ylabel("$x^2-4x+1$")
+ax.set_xlabel("$x$", fontsize=16)
+ax.set_ylabel(r"$\frac{\sin(x)}{x}$", fontsize=16)
 
 
 
 # animation function
 def run(data):
     t, y = data
-    
-    
     number = len(x_data)
     ax.figure.canvas.draw()
     line.set_data(x_data, y_data)
@@ -100,7 +99,7 @@ def run(data):
 ax.plot(x, y)
 
 # animate this one
-ani = animation.FuncAnimation(fig, run, gen_data(h), interval=1000, repeat=False)
+ani = animation.FuncAnimation(fig, run, gen_data(h), interval=10, repeat=False)
 
 ##writergif = animation.PillowWriter(fps=10) 
 ##ani.save("animation.gif", writer=writergif)
