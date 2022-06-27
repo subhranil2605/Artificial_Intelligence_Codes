@@ -43,12 +43,14 @@ def func(x):
 
 lower_bound = -10
 upper_bound = 10
+
+# random starting point
 starting_point = np.random.randint(lower_bound, upper_bound)
 
 
 # result
 lr=0.8
-history, result = gradient_descent(starting_point, func, lr, 100)
+history, result = gradient_descent(9, func, lr, 100)
 
 print(f"The lo")
 
@@ -81,12 +83,14 @@ ax.set_ylabel("$x^2-4x+1$")
 # animation function
 def run(data):
     t, y = data
-    x_data.append(t)
-    y_data.append(y)
+    
+    
     number = len(x_data)
     ax.figure.canvas.draw()
     line.set_data(x_data, y_data)
     point.set_data(x_data, y_data)
+    x_data.append(t)
+    y_data.append(y)
     ax.set_title(f"Gradient Descent\nresult={t}, lr={lr}, iteration={number}")
 ##    ax.annotate(f"{number}", xy=(t, y), xytext=(-2*5, -5), textcoords='offset points')
     return line, point, 
@@ -97,5 +101,8 @@ ax.plot(x, y)
 
 # animate this one
 ani = animation.FuncAnimation(fig, run, gen_data(h), interval=1000, repeat=False)
+
+##writergif = animation.PillowWriter(fps=10) 
+##ani.save("animation.gif", writer=writergif)
 
 plt.show()
