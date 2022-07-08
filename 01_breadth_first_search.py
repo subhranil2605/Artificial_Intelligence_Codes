@@ -1,5 +1,4 @@
 from collections import deque
-import numpy as np
 
 
 # expanding the dict with state and parent adding to it
@@ -46,29 +45,22 @@ def bfs(graph, start, goal):
     
     frontier = deque([node])        # queue
     explored = set()                # visited states
-    
     paths = []
     
     while frontier:
         node = frontier.popleft()
         explored.add(node)
-        
         for child in expand(graph, node):                
             if child["state"] not in explored and child["state"] not in frontier:
                 paths.append(child)
-                
                 if child["state"] == goal:
                     return path(start, child, paths) 
-                
                 frontier.append(child["state"])       
              
     return None
 
-    
-
 
 if __name__ == "__main__":
-
     romania_map_graph = make_undirected_graph(dict(
         Arad = ['Zerind', 'Sibiu', 'Timisoara'],
         Bucharest = ["Urziceni", "Pitesti", "Giurgiu", "Fagaras"],
@@ -84,7 +76,6 @@ if __name__ == "__main__":
         Rimnicu=["Sibiu"],
         Urziceni=["Vaslui"]
     ))
-
 
     start = 'Arad'
     end = 'Giurgiu'
