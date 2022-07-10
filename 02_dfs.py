@@ -1,13 +1,12 @@
 from ai_classes.problem import GraphProblem
 from ai_classes.graph import Graph, UndirectedGraph
-from ai_classes.search import Search
-
+from ai_classes.search import depth_first_search
 
 if __name__ == "__main__":
     # data for the problem of travelling Romania
     romania_map_graph = dict(
-        Arad = ['Zerind', 'Sibiu', 'Timisoara'],
-        Bucharest = ["Urziceni", "Pitesti", "Giurgiu", "Fagaras"],
+        Arad=['Zerind', 'Sibiu', 'Timisoara'],
+        Bucharest=["Urziceni", "Pitesti", "Giurgiu", "Fagaras"],
         Craiova=["Drobeta", "Rimnicu", "Pitesti"],
         Drobeta=["Mehadia"],
         Eforie=["Hirsova"],
@@ -23,8 +22,8 @@ if __name__ == "__main__":
 
     graph = UndirectedGraph(romania_map_graph.copy())
 
-    romania_problem = GraphProblem('Arad', 'Bucharest', graph)
+    romania_problem = GraphProblem('Arad', 'Zerind', graph)
 
-    path = Search.breadth_first_search(romania_problem)
+    path = depth_first_search(romania_problem)
 
     print(path)
