@@ -33,8 +33,10 @@ def depth_first_search(problem: GraphProblem):
 
     while frontier:
         node = frontier.pop()
-        if problem.goal_test(node):
-            return node
+
+        if problem.goal_test(node.state):
+            return node.path()
+
         explored.add(node.state)
         frontier.extend(child for child in node.expand(problem)
                         if child.state not in explored and child not in frontier)

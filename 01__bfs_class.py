@@ -122,6 +122,7 @@ def bfs(problem):
                 if problem.goal_test(child.state):
                     return child.path()
                 frontier.append(child)
+                print(child)
     return None
 
 
@@ -150,4 +151,3 @@ if __name__ == "__main__":
 
     path = bfs(romania_problem)
 
-    print(path)
