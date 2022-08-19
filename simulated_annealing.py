@@ -1,4 +1,3 @@
-from main import *
 import numpy as np
 import sys
 

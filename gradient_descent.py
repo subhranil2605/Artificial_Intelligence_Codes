@@ -35,12 +35,17 @@ def gradient_descent(start: float,
 
 # function
 def func(x):
-    # return np.power(x, 2) - 4*x + 1
-    return np.sin(x) / x
+    return np.power(x, 2) - 4*x + 1
+    # return np.sin(x) / x
 
 
-lower_bound = 2.0
-upper_bound = 15.0
+
+
+##lower_bound = 2.0
+##upper_bound = 15.0
+
+lower_bound = -3.0
+upper_bound = 10.0
 
 # random starting point
 starting_point = np.random.randint(lower_bound, upper_bound)
@@ -71,8 +76,8 @@ x_data, y_data = [], []
 line, = ax.plot([], [], lw=3, c="red")
 point, = ax.plot([], [], 'k.')
 
-ax.set_xlabel("$x$", fontsize=16)
-ax.set_ylabel(r"$\frac{\sin(x)}{x}$", fontsize=16)
+##ax.set_xlabel("$x$", fontsize=16)
+##ax.set_ylabel(r"$\frac{\sin(x)}{x}$", fontsize=16)
 
 
 # animation function
