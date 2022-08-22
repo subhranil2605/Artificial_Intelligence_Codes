@@ -1,14 +1,14 @@
 """
 Genetic Algorithm
 """
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-range_ = [0, 10]
+range_ = [10, 30]
 
 
 def func(x):
-    return x * (8 - x)
+    return 100 * np.sin(x) / x
 
 
 def make_chromosome(size):
@@ -31,6 +31,11 @@ def conversion(chromosome):
     return value
 
 
+def max_with_index(list_: list):
+    max_element = max(list_)
+    return max_element, list_.index(max_element)
+
+
 def binary_tournament(chrom_1, chrom_2):
     return chrom_1 if fitness(chrom_1) >= fitness(chrom_2) else chrom_2
 
@@ -42,15 +47,6 @@ def single_point_crossover(chrom_1, chrom_2):
     child_1 = chrom_1[:cp] + chrom_2[cp:]
     child_2 = chrom_2[:cp] + chrom_1[cp:]
     return child_1, child_2
-
-
-def mutate(chrom: str, mp: float):
-    c = list(map(int, chrom))
-    for pos in range(len(c)):
-        if np.random.random() < mp:
-            c[pos] = int(not c[pos])
-
-    return ''.join(map(str, c))
 
 
 def selection(population: list):
@@ -77,7 +73,16 @@ def crossover(population: list, cross_prob: float):
     return xpopulation
 
 
-def mutation(population: list, mut_prob: float):
+def mutate(chrom: str, mp: float) -> str:
+    c = list(map(int, chrom))
+    for pos in range(len(c)):
+        if np.random.random() < mp:
+            c[pos] = int(not c[pos])
+
+    return ''.join(map(str, c))
+
+
+def mutation(population: list, mut_prob: float) -> None:
     for i, chrom in enumerate(population):
         population[i] = mutate(chrom, mut_prob)
 
@@ -87,10 +92,10 @@ def genetic_algorithm(pop_size, chrom_len, max_iter, cross_prob, mut_prob):
     fit = list(map(fitness, pop))
     best_fits = []
     avg_fits = []
+    sols = []
 
     i = 0
     while i < max_iter:
-        print(f"Generation {i + 1}")
         best_fits.append(max(fit))
         avg_fits.append(np.mean(fit))
         mpool = selection(pop)
@@ -99,12 +104,14 @@ def genetic_algorithm(pop_size, chrom_len, max_iter, cross_prob, mut_prob):
         child_best_fit = list(map(fitness, xpop))
 
         # elitism
-        old_best, old_i = max(fit), fit.index(max(fit))
-        new_best, new_i = max(child_best_fit), child_best_fit.index(max(child_best_fit))
+        old_best, old_i = max_with_index(fit)
+        new_best, new_i = max_with_index(child_best_fit)
 
         if old_best >= new_best:
             xpop[new_i] = pop[old_i]
             child_best_fit[new_i] = fit[new_i]
+
+        sols.append(conversion(xpop[new_i]))
 
         pop = xpop
         fit = child_best_fit
@@ -115,10 +122,27 @@ def genetic_algorithm(pop_size, chrom_len, max_iter, cross_prob, mut_prob):
     f_max, max_i = max(f), f.index(max(f))
     print(conversion(pop[max_i]), f_max)
 
-    plt.plot(avg_fits)
-    plt.plot(best_fits)
+    plt.figure(figsize=(12, 8), dpi=200)
+
+    plt.subplot(2, 1, 1)
+    plt.plot(avg_fits, label='Avg. Fitness')
+    plt.plot(best_fits, label='Best Fitness')
+    plt.legend()
+    plt.grid()
+    plt.title(f"Genetic Algorithm\ncrossover_prob = {cross_prob}, mutation_prob={mut_prob}")
+
+    plt.subplot(2, 1, 2)
+    x = np.linspace(range_[0], range_[1], 1000)
+    plt.scatter(conversion(pop[max_i]), f_max, c='red', marker='x', s=60, zorder=3)
+    plt.scatter(sols, func(sols), c='black', s=4, alpha=0.3, zorder=2)
+    plt.plot(x, func(x), zorder=1)
+    plt.grid()
+    plt.xlabel("$x$")
+    plt.ylabel(r"$f(x)=100 \frac{\sin(x)}{x}$")
+
+    plt.savefig(f'ga/ga_{cross_prob}_{mut_prob}.jpg')
     plt.show()
 
 
 if __name__ == '__main__':
-    genetic_algorithm(100, 10, 100, 0.8, 0.01)
+    genetic_algorithm(100, 10, 100, 0.93, 0.01)
