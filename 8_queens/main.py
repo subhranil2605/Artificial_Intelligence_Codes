@@ -1,3 +1,6 @@
+from plotting import checkerboard_table
+
+
 def make_board(queen_rows: list) -> tuple[list, list]:
     """
     Creating chess board with the queen positions given as a list,
@@ -82,3 +85,6 @@ if __name__ == '__main__':
     print("\nThe pairs are: ")
     for pair in attacking_pairs:
         print(f"{pair[0]} x {pair[1]}")
+
+    # plot the checker board with the queens
+    checkerboard_table(chess_board)
