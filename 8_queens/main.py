@@ -47,7 +47,7 @@ def attacking(queen_positions: list) -> list:
                     # two queens attack each other
                     # if two queens are on same row or they are on the diagonal
                     is_same_row: bool = pos_1[0] == pos_2[0]
-                    is_diagonal: bool = pos_1[0] - pos_2[0] == pos_1[1] - pos_2[1]
+                    is_diagonal: bool = abs(pos_1[0] - pos_2[0]) == abs(pos_1[1] - pos_2[1])
 
                     # add to the attacking pair if they are attacking
                     if is_same_row or is_diagonal:
