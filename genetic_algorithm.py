@@ -2,7 +2,10 @@
 Genetic Algorithm
 """
 import matplotlib.pyplot as plt
+import mplcyberpunk
 import numpy as np
+
+plt.style.use("cyberpunk")
 
 range_ = [10, 30]
 
