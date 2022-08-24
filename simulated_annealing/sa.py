@@ -52,6 +52,7 @@ def simulated_annealing(objective,
     # plotting helpers
     ts = [T]
     es = [current_energy]
+    bs = [bin_to_dec_map(current_state, bounds)]
 
     # run until temperature reduces to a minimum value
     while T > t_min:
@@ -85,12 +86,13 @@ def simulated_annealing(objective,
         
         ts.append(T)
         es.append(current_energy)
+        bs.append(bin_to_dec_map(current_state, bounds))
 
 
     best_sol = bin_to_dec_map(current_state, bounds)
     print(best_sol)
 
-    return ts, es
+    return bs, ts
 
 
 ##    plt.subplot(2, 1, 1)
