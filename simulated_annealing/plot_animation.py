@@ -37,21 +37,25 @@ class UpdateDist:
 
 fig, ax = plt.subplots()
 
-
+# params
 bounds = [0.00001, 21]
-max_temp = 500000
-min_temp = 10
-m_iter = 50
-perturb_prob = 0.3
-k = 0.3
-xs, ts = simulated_annealing(obj_func, bounds, max_temp, min_temp, m_iter, perturb_prob, k)
+bs_size = 8
+max_temp, min_temp = 500000, 10
+m_iter = 75
+perturb_prob = 0.6
+k_b = 1.380649e-3
 
+# best solutions and temps
+xs, ts = simulated_annealing(obj_func, bounds, bs_size, max_temp, min_temp, m_iter, perturb_prob, k_b, plot=False)
+
+# updating new data each time
 ud = UpdateDist(ax, xs, ts, bounds)
+
+# animation
+anim = FuncAnimation(fig, ud, frames=len(xs), interval=300, repeat=False)
 
 
 val = np.linspace(bounds[0], bounds[1], 1000)
 ax.plot(val, obj_func(val), zorder=1)
-
-anim = FuncAnimation(fig, ud, frames=len(xs), interval=300, repeat=False)
 
 plt.show()

@@ -1,9 +1,8 @@
 import numpy as np
-import sys
 import matplotlib.pyplot as plt
 
-
-INIFINITY = sys.maxsize
+##import mplcyberpunk
+##plt.style.use("cyberpunk")
 
 
 def make_binary_string(size):
@@ -22,6 +21,7 @@ def bin_to_dec_map(binary_str: str, bounds: list):
 
 
 def perturb(state: str, prob: float) -> str:
+    """Perturbation"""
     s: list = list(map(int, state))
     
     for pos in range(len(s)):
@@ -29,18 +29,19 @@ def perturb(state: str, prob: float) -> str:
             s[pos] = int(not s[pos])
 
     return ''.join(map(str, s))
-
         
     
 def simulated_annealing(objective,
                         bounds,
+                        bs_size,
                         t_max, t_min,
                         max_iter=10,
                         perturb_prob=0.6,
-                        k=0.7) -> None:
+                        k=0.7,
+                        plot=True) -> None:
 
     # random initial state
-    current_state: str = make_binary_string(8)
+    current_state: str = make_binary_string(bs_size)
 
     # Initial energy
     current_energy: float = objective(bin_to_dec_map(current_state, bounds))
@@ -48,11 +49,11 @@ def simulated_annealing(objective,
     # initial large temperature
     T = t_max
 
-
     # plotting helpers
     ts = [T]
     es = [current_energy]
     bs = [bin_to_dec_map(current_state, bounds)]
+    accpt_probs = []
 
     # run until temperature reduces to a minimum value
     while T > t_min:
@@ -72,7 +73,11 @@ def simulated_annealing(objective,
             # check if the difference is less than equal to 0
             # or in prob e^(- delE / kT)
             # means the successor is better than parent and it is minimization problem
-            if delta_energy <= 0 or np.random.random() < np.exp(- delta_energy / (k * T)):
+
+            # acceptance probability
+            accpt_prob = np.exp(- delta_energy / (k * T))
+            
+            if delta_energy <= 0 or np.random.random() < accpt_prob:
                 
                 # old state is the new state
                 current_state = next_state
@@ -80,48 +85,80 @@ def simulated_annealing(objective,
                 # old energy is the new energy
                 current_energy = next_energy
 
-
         # cooling temperature
         T *= 0.9
         
         ts.append(T)
         es.append(current_energy)
         bs.append(bin_to_dec_map(current_state, bounds))
+        accpt_probs.append(accpt_prob)
 
 
     best_sol = bin_to_dec_map(current_state, bounds)
-    print(best_sol)
+    
+    print(f"The Global Minimum is at: x = {best_sol}")
+    
+
+    if plot:
+        plt.figure(figsize=(12, 8))
+        # first plot
+        plt.subplot(2, 2, 1)
+        x = np.linspace(bounds[0], bounds[1], 1000)
+        plt.plot(x, objective(x), zorder=1)
+        plt.scatter(best_sol, objective(best_sol), c='r', zorder=3)
+        plt.title("Global Minimum")
+        plt.xlabel("$x$")
+        plt.ylabel(r"$f(x)=100*\frac{\sin(x)}{x}$")
+        
+        
+        # second plot
+        plt.subplot(2, 2, 2)
+        plt.plot(es)
+        plt.title("Cost")
+        plt.xlabel("Step")
+        plt.ylabel("Energy")
+
+        # third plot
+        plt.subplot(2, 2, 3)
+        plt.plot(accpt_probs, '.')
+        plt.xlabel("Step")
+        plt.ylabel("Acceptance Probability")
+
+        # fourth plot
+        plt.subplot(2, 2, 4)
+        plt.plot(ts)
+        plt.xlabel("Step")
+        plt.ylabel("Temperature")
+
+        plt.savefig('SA1.jpg', dpi=200)
+        plt.show()
 
     return bs, ts
 
-
-##    plt.subplot(2, 1, 1)
-##    plt.plot(ts, es)
-##    
-##    plt.xlim(t_max, t_min)
-##    plt.xlabel("T")
-##    plt.ylabel("E")
-##
-##
-##    x = np.linspace(bounds[0], bounds[1], 1000)
-##    plt.subplot(2, 1, 2)
-##    plt.plot(x, objective(x), zorder=1)
-##    plt.scatter(best_sol, objective(best_sol), c='r', zorder=3)
-##    
-##    plt.show()
-
     
 if __name__ == '__main__':
-    bounds = [0.00001, 21]
     
+    # objective function
     def obj_func(x):
         return 100 * np.sin(x) / x
+
+
+    # limits
+    bounds = [0.00001, 21]
+
+    # binary string size
+    bs_size = 8
+
+    # max and min temperature
+    max_temp, min_temp = 50000, 10
     
-    max_temp = 500000
-    min_temp = 10
     m_iter = 50
-    perturb_prob = 0.3
-    k = 0.3
+
+    # perturbation probability
+    perturb_prob = 0.6
+
+    # Boltzman constant
+    k_b = 1.380649e-3
     
-    simulated_annealing(obj_func, bounds, max_temp, min_temp, m_iter, perturb_prob, k)
+    simulated_annealing(obj_func, bounds, bs_size, max_temp, min_temp, m_iter, perturb_prob, k_b, plot=True)
     
