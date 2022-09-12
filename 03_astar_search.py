@@ -147,11 +147,7 @@ def UndirectedGraph(graph_dict: dict = None) -> Graph:
 
 
 class Node:
-    """
-    Node class
-    
-    """
-
+    """Node class"""
     def __init__(self, state: str, parent: Node = None, path_cost=0):
         """
         constructor of the Node class
