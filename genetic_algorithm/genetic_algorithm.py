@@ -112,7 +112,7 @@ def genetic_algorithm(pop_size, chrom_len, max_iter, cross_prob, mut_prob):
 
         if old_best >= new_best:
             xpop[new_i] = pop[old_i]
-            child_best_fit[new_i] = fit[new_i]
+            child_best_fit[new_i] = fit[old_i]
 
         sols.append(conversion(xpop[new_i]))
 
@@ -143,7 +143,7 @@ def genetic_algorithm(pop_size, chrom_len, max_iter, cross_prob, mut_prob):
     plt.xlabel("$x$")
     plt.ylabel(r"$f(x)=100 \frac{\sin(x)}{x}$")
 
-    plt.savefig(f'ga/ga_{cross_prob}_{mut_prob}.jpg')
+    #plt.savefig(f'ga/ga_{cross_prob}_{mut_prob}.jpg')
     plt.show()
 
 
